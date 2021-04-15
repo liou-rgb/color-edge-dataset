@@ -7,7 +7,7 @@ gtroot = 'D:\demo\color edge dataset\train\gt\';
 imtrain = dir([trainroot '*.tif']);
 load('D:\demo\settings.mat','paras');
 X = zeros(length(paras),30000*30);
-Y = zeros(1,90000*30);
+Y = zeros(2,90000*30);
 m = 1;
 for n = 1:30
     img = imread([trainroot imtrain(n).name]);
@@ -18,6 +18,7 @@ for n = 1:30
     num = numel(t)-1;
     X(:,m:m+num) = CESM;
     Y(1,m:m+num)=t;
+    Y(2,m:m+num)=1-t;
     m = m+num;
     clear CESM  t
 end
@@ -43,6 +44,7 @@ for i2 = 1:1
     img2 = imread([testroot imtest(i2).name]);
     [CESM,CEDM] = CESM_ANDD(img2,paras);
     EPM = net(CESM);
+    EPM = EPM(1,:);
     EDM = select_angle(CEDM);
     results{i2,1}.epm = reshape(EPM(1,:),size(img2,1),size(img2,2));
     results{i2,1}.edm = reshape(EDM,size(img2,1),size(img2,2));
